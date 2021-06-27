@@ -230,12 +230,12 @@ class ERDDAP:
             )
         metadata_url = f"{self.server}/griddap/{self.dataset_id}"
         (
-            self.constraints,
-            self.dim_names,
-            self.variables,
+            constraints,
+            dim_names,
+            variables,
         ) = _griddap_get_constraints(metadata_url)
-        self._constraints_original = self.constraints.copy()
-        self._variables_original = self.variables.copy()
+        self._constraints_original = constraints.copy()
+        self._variables_original = variables.copy()
 
     def get_search_url(
         self,
@@ -413,6 +413,7 @@ class ERDDAP:
         response=None,
         constraints=None,
         relative_constraints=None,
+        dim_names=None,
         **kwargs,
     ) -> str:
         """The download URL for the `server` endpoint.
@@ -445,6 +446,7 @@ class ERDDAP:
         variables = variables if variables else self.variables
         response = response if response else self.response
         constraints = constraints if constraints else self.constraints
+        dim_names = dim_names if dim_names else self.dim_names
         relative_constraints = (
             relative_constraints if relative_constraints else self.relative_constraints
         )
@@ -472,7 +474,7 @@ class ERDDAP:
             ]
             for var in variables:
                 sub_url = [var]
-                for dim in self.dim_names:
+                for dim in dim_names:
                     sub_url.append(
                         f"[({constraints[dim + '>=']}):"
                         f"{constraints[dim + '_step']}:"
